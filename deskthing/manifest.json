@@ -1,19 +1,40 @@
 {
-  "id": "deskthingapp",
+  "id": "plexthing",
   "isWebApp": true,
   "requires": [],
-  "label": "DeskThing Template App",
-  "version": "v0.11.0",
-  "version_code": 11.0,
+  "label": "PlexThing",
+  "version": "v0.1.0",
+  "version_code": 1.0,
   "compatible_server": [11],
   "compatible_client": [11],
-  "description": "Description was not found while updating",
-  "author": "Unknown",
+  "description": "Plex music controller for DeskThing. Browse your library and control playback on Plexamp or other Plex players.",
+  "author": "zachatrocity",
   "platforms": ["windows", "mac", "linux"],
-  "homepage": "",
-  "repository": "",
-  "tags": ["webappOnly"],
+  "homepage": "https://github.com/zachatrocity/plexthing",
+  "repository": "https://github.com/zachatrocity/plexthing",
+  "tags": ["music", "plex", "media"],
   "requiredVersions": { "server": ">=0.11.0", "client": ">=0.11.0" },
   "updateUrl": "",
-  "template": "full"
+  "template": "full",
+  "settings": {
+    "plex_server_url": {
+      "type": "string",
+      "label": "Plex Server URL",
+      "description": "URL to your Plex Media Server (e.g., http://192.168.1.100:32400 or https://plex.yourdomain.com)",
+      "default": "http://localhost:32400"
+    },
+    "plex_token": {
+      "type": "string",
+      "label": "Plex Token",
+      "description": "Your Plex authentication token. Get it from Settings → Account → Plex Token",
+      "default": "",
+      "sensitive": true
+    },
+    "player_identifier": {
+      "type": "string",
+      "label": "Target Player",
+      "description": "Client identifier of the Plex player to control. Leave empty for auto-discovery.",
+      "default": ""
+    }
+  }
 }
