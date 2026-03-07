@@ -106,7 +106,7 @@ Refs: #issue-number`
 
 | Week | Beads Completed | Hours | Notes |
 |------|-----------------|-------|-------|
-| Week 1 | 3 | ~3h | M0 complete, M1 complete, starting M2 |
+| Week 1 | 5 | ~5h | Foundation + UI redesign complete |
 | Week 2 | | | |
 | Week 3 | | | |
 | Week 4 | | | |
@@ -139,4 +139,37 @@ See [GitHub Issues](https://github.com/zachatrocity/plexthing/issues) for full l
 
 ---
 
-**Last Updated:** March 6, 2026
+## Summary of Completed Work
+
+### ✅ Foundation Phase (DONE)
+1. **Project Setup** - Repo initialized at github.com/zachatrocity/plexthing
+2. **Plex API Client** - Full TypeScript client with library/artists/albums/tracks/players
+3. **Server Architecture** - Settings via `initSettings()`, request handlers, no loops
+4. **UI Foundation** - Plexamp-inspired black theme with yellow (#E5A00D) accents
+5. **Connection Status** - Visual connected/not connected states
+
+### 📋 Remaining Work
+
+**Milestone 2: Library Browser (Priority)**
+- Artist list view with thumbnails
+- Album grid view
+- Track list view
+- Navigation stack (back/forward)
+- Search functionality
+
+**Milestone 3-4: Player & Controls**
+- Timeline subscription
+- Player discovery
+- Now Playing screen
+- Playback controls
+
+**Milestone 5-6: Polish**
+- Car Thing button mapping
+- Touch optimizations
+- Release packaging
+
+---
+
+**Ready to resume - all context preserved in GitHub issues and BEADS.md**
+
+**Last Updated:** March 7, 2026
