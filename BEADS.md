@@ -12,7 +12,7 @@ _The next bead to work on._
 
 | Bead ID | Issue | Title | Status | Notes |
 |---------|-------|-------|--------|-------|
-| #1 | [#1](https://github.com/zachatrocity/plexthing/issues/1) | Update package.json with proper app metadata | 🔧 In Progress | | |
+| #2 | [#7](https://github.com/zachatrocity/plexthing/issues/7) | Create Plex API client module | 🔧 In Progress | Working on TypeScript Plex API wrapper |
 
 ---
 
@@ -20,20 +20,24 @@ _The next bead to work on._
 
 | Bead ID | Issue | Title | Estimate | Priority |
 |---------|-------|-------|----------|----------|
-| #2 | [#7](https://github.com/zachatrocity/plexthing/issues/7) | Create Plex API client module | 2-3h | High |
 | #3 | [#8](https://github.com/zachatrocity/plexthing/issues/8) | Build settings/config UI for Plex connection | 2-3h | High |
-| #4 | [#9](https://github.com/zachatrocity/plexthing/issues/9) | Build artist list view | 3-4h | Medium |
-| #5 | [#10](https://github.com/zachatrocity/plexthing/issues/10) | Implement navigation (Artist → Album → Track) | 3-4h | Medium |
-| #6 | [#11](https://github.com/zachatrocity/plexthing/issues/11) | Build Now Playing screen | 4-5h | Medium |
-| #7 | [#12](https://github.com/zachatrocity/plexthing/issues/12) | Implement timeline subscription for playback state | 3-4h | High |
+
+---
+
+## Completed Beads
+
+| Bead ID | Issue | Title | Completed | Notes |
+|---------|-------|-------|-----------|-------|
+| #0 | - | Initialize project from template | 2026-03-06 | Repo created at github.com/zachatrocity/plexthing |
+| #1 | [#1](https://github.com/zachatrocity/plexthing/issues/1) | Update package.json with proper app metadata | 2026-03-06 | Added PlexThing branding and settings schema |
 
 ---
 
 ## Backlog (Future Beads)
 
-_These will be split into beads as we approach them._
-
 ### Milestone 2: Music Library Browser
+- #4: Build artist list view (estimate: 3-4h)
+- #5: Implement navigation (Artist → Album → Track) (estimate: 3-4h)
 - Album grid view
 - Track list view
 - Album detail view
@@ -43,12 +47,14 @@ _These will be split into beads as we approach them._
 - Loading states
 
 ### Milestone 3: Player Discovery
+- #7: Implement timeline subscription for playback state (estimate: 3-4h)
 - Plex client discovery (poll /clients)
 - Player selection UI
 - Connection management
 - Player disconnect/reconnect handling
 
 ### Milestone 4: Now Playing & Controls
+- #6: Build Now Playing screen (estimate: 4-5h)
 - Playback controls (play/pause/skip/seek)
 - Progress bar with scrubbing
 - Volume control
@@ -70,14 +76,6 @@ _These will be split into beads as we approach them._
 - App icon
 - GitHub release
 - Community announcement
-
----
-
-## Completed Beads
-
-| Bead ID | Issue | Title | Completed | Notes |
-|---------|-------|-------|-----------|-------|
-| #0 | - | Initialize project from template | 2026-03-06 | Repo created at github.com/zachatrocity/plexthing |
 
 ---
 
@@ -103,7 +101,7 @@ Refs: #issue-number`
 
 | Week | Beads Completed | Hours | Notes |
 |------|-----------------|-------|-------|
-| Week 1 | | | |
+| Week 1 | 1 | ~1h | Setup complete, starting M1 |
 | Week 2 | | | |
 | Week 3 | | | |
 | Week 4 | | | |
@@ -114,13 +112,27 @@ Refs: #issue-number`
 
 | Milestone | Beads | % Complete | Target |
 |-----------|-------|------------|--------|
-| M0: Bootstrap | 1/1 | 100% | Done |
-| M1: Plex Connection | 0/2 | 0% | Week 1-2 |
-| M2: Library Browser | 0/2 | 0% | Week 2-3 |
-| M3: Player Discovery | 0/1 | 0% | Week 3 |
-| M4: Now Playing | 0/1 | 0% | Week 3-4 |
+| M0: Bootstrap | 2/2 | 100% | Done |
+| M1: Plex Connection | 1/3 | 33% | Week 1-2 |
+| M2: Library Browser | 0/Pend | 0% | Week 2-3 |
+| M3: Player Discovery | 0/Pend | 0% | Week 3 |
+| M4: Now Playing | 0/Pend | 0% | Week 3-4 |
 | M5: Car Thing | 0/Pend | 0% | Week 4 |
 | M6: Release | 0/Pend | 0% | Week 5 |
+
+**Overall Progress:** ~5% (2/40+ beads)
+
+---
+
+## Open Issues
+
+See [GitHub Issues](https://github.com/zachatrocity/plexthing/issues) for full list:
+- #7: M1 - Create Plex API client module (In Progress)
+- #8: M1 - Build settings/config UI for Plex connection
+- #9: M2 - Build artist list view
+- #10: M2 - Implement navigation (Artist → Album → Track)
+- #11: M4 - Build Now Playing screen
+- #12: M3 - Implement timeline subscription for playback state
 
 ---
 
