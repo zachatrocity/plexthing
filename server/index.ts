@@ -227,16 +227,3 @@ DeskThing.on(DESKTHING_EVENTS.START, start);
 
 // Main exit point
 DeskThing.on(DESKTHING_EVENTS.STOP, stop);
-
-// Handle settings changes
-let settingsChangeTimeout: NodeJS.Timeout | null = null;
-DeskThing.on(DESKTHING_EVENTS.SETTINGS, async () => {
-  // Debounce settings changes to prevent loops
-  if (settingsChangeTimeout) {
-    clearTimeout(settingsChangeTimeout);
-  }
-  settingsChangeTimeout = setTimeout(async () => {
-    console.log('Settings updated, reinitializing Plex connection...');
-    await initializePlexClient();
-  }, 500);
-});
