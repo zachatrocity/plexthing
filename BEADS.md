@@ -82,6 +82,31 @@ _The next bead to work on._
 - GitHub release
 - Community announcement
 
+### Future Ideas & Investigation
+
+**Bead #10: Universal Now Playing Screen**
+- Display album art and seeker bar for ANY device playing via Plex
+- Not just controlling a specific player - show what's playing anywhere
+- Auto-detect active playback sessions
+- Show track info, album art, progress bar
+- Pause/skip controls if permissions allow
+- *Investigation needed: Plex API for active sessions*
+
+**Bead #11: DeskThing Audio Source**
+- Investigate registering as DeskThing audio source
+- Would allow Car Thing buttons to control Plex directly
+- Might enable system-wide media key integration
+- Need to research DeskThing's audio source API
+- *Question: Is this better than current player-control approach?*
+
+**Bead #12: Global Music Search**
+- Search across all Plex libraries
+- Quick access to artists, albums, tracks
+- Recent searches cache
+- Voice search integration (if DeskThing supports)
+- Search results with artwork thumbnails
+- One-tap play to default player
+
 ---
 
 ## Development Workflow
