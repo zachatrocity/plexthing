@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { DeskThing } from '@deskthing/client';
 import ConnectionStatus from './components/ConnectionStatus';
 
-type View = 'home' | 'settings' | 'library' | 'player';
+type View = 'home' | 'library' | 'player';
 
 interface AppState {
   view: View;
   connected: boolean;
   serverName?: string;
   error?: string;
-  currentView: string;
 }
 
 const App: React.FC = () => {
@@ -20,10 +19,8 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Listen for messages from the server
     const handleMessage = (event: MessageEvent) => {
       const data = event.data;
-      
       if (!data?.type) return;
 
       switch (data.type) {
@@ -35,19 +32,14 @@ const App: React.FC = () => {
           setIsLoading(false);
           break;
         }
-
         case 'plex:libraries': {
-          // Handle libraries data
           console.log('Libraries:', data.payload);
           break;
         }
-
         case 'plex:artists': {
-          // Handle artists data
           console.log('Artists:', data.payload);
           break;
         }
-
         case 'error': {
           console.error('Server error:', data.payload);
           setError(data.payload?.message || 'Unknown error');
@@ -57,12 +49,7 @@ const App: React.FC = () => {
     };
 
     window.addEventListener('message', handleMessage);
-
-    // Request initial connection status
-    DeskThing.send({
-      type: 'plex:testConnection',
-      payload: {},
-    });
+    DeskThing.send({ type: 'plex:testConnection', payload: {} });
 
     return () => window.removeEventListener('message', handleMessage);
   }, []);
@@ -70,10 +57,7 @@ const App: React.FC = () => {
   const handleRetryConnection = () => {
     setIsLoading(true);
     setError(undefined);
-    DeskThing.send({
-      type: 'plex:testConnection',
-      payload: {},
-    });
+    DeskThing.send({ type: 'plex:testConnection', payload: {} });
   };
 
   const renderContent = () => {
@@ -81,8 +65,8 @@ const App: React.FC = () => {
       return (
         <div className="flex items-center justify-center h-full">
           <div className="text-center">
-            <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-gray-400">Connecting to Plex...</p>
+            <div className="w-12 h-12 border-3 border-[#E5A00D] border-t-transparent rounded-full animate-spin mx-auto mb-6" />
+            <p className="text-[#a0a0a0] text-lg">Connecting to Plex...</p>
           </div>
         </div>
       );
@@ -92,9 +76,13 @@ const App: React.FC = () => {
       case 'home':
       default:
         return (
-          <div className="p-4 space-y-4">
-            <div className="text-center mb-6">
-              <p className="text-gray-400">Plexamp for DeskThing</p>
+          <div className="p-5 space-y-5">
+            {/* Logo/Title Section */}
+            <div className="text-center py-4">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-[#E5A00D] to-[#f5b020] bg-clip-text text-transparent">
+                PlexThing
+              </h1>
+              <p className="text-[#707070] text-sm mt-1">Plex Music for DeskThing</p>
             </div>
 
             <ConnectionStatus
@@ -104,40 +92,41 @@ const App: React.FC = () => {
               onRetry={handleRetryConnection}
             />
 
-            <div className="grid grid-cols-2 gap-3">
+            {/* Main Actions Grid */}
+            <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => setView('library')}
                 disabled={!connected}
-                className="p-4 bg-slate-800 hover:bg-slate-700 disabled:bg-slate-900 disabled:text-slate-600 text-white rounded-lg border border-slate-700 transition-colors"
+                className="group flex flex-col items-center justify-center p-6 bg-[#1a1a1a] hover:bg-[#2a2a2a] disabled:bg-[#0f0f0f] disabled:text-[#505050] text-white rounded-2xl border border-[#333] transition-all active:scale-95 disabled:active:scale-100 min-h-[120px]"
               >
-                <div className="text-2xl mb-2">🎵</div>
-                <div className="text-sm font-medium">Music Library</div>
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🎵</div>
+                <div className="text-base font-semibold">Library</div>
               </button>
 
               <button
                 onClick={() => DeskThing.send({ type: 'plex:getClients', payload: {} })}
                 disabled={!connected}
-                className="p-4 bg-slate-800 hover:bg-slate-700 disabled:bg-slate-900 disabled:text-slate-600 text-white rounded-lg border border-slate-700 transition-colors"
+                className="group flex flex-col items-center justify-center p-6 bg-[#1a1a1a] hover:bg-[#2a2a2a] disabled:bg-[#0f0f0f] disabled:text-[#505050] text-white rounded-2xl border border-[#333] transition-all active:scale-95 disabled:active:scale-100 min-h-[120px]"
               >
-                <div className="text-2xl mb-2">🎮</div>
-                <div className="text-sm font-medium">Find Players</div>
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🎮</div>
+                <div className="text-base font-semibold">Players</div>
               </button>
 
               <button
                 onClick={() => setView('player')}
                 disabled={!connected}
-                className="p-4 bg-slate-800 hover:bg-slate-700 disabled:bg-slate-900 disabled:text-slate-600 text-white rounded-lg border border-slate-700 transition-colors"
+                className="group flex flex-col items-center justify-center p-6 bg-[#E5A00D] hover:bg-[#f5b020] disabled:bg-[#1a1a1a] disabled:text-[#505050] text-black rounded-2xl border border-[#E5A00D] transition-all active:scale-95 disabled:active:scale-100 min-h-[120px]"
               >
-                <div className="text-2xl mb-2">▶️</div>
-                <div className="text-sm font-medium">Now Playing</div>
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">▶️</div>
+                <div className="text-base font-bold">Now Playing</div>
               </button>
 
               <button
-                onClick={() => setView('settings')}
-                className="p-4 bg-slate-800 hover:bg-slate-700 text-white rounded-lg border border-slate-700 transition-colors"
+                onClick={() => DeskThing.send({ type: 'plex:testConnection', payload: {} })}
+                className="group flex flex-col items-center justify-center p-6 bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white rounded-2xl border border-[#333] transition-all active:scale-95 min-h-[120px]"
               >
-                <div className="text-2xl mb-2">⚙️</div>
-                <div className="text-sm font-medium">Settings</div>
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🔄</div>
+                <div className="text-base font-semibold">Refresh</div>
               </button>
             </div>
           </div>
@@ -146,12 +135,12 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="bg-slate-900 w-full h-full overflow-hidden flex flex-col">
+    <div className="bg-black w-full h-full overflow-hidden flex flex-col">
       {/* Header */}
-      <header className="flex items-center justify-center px-4 py-3 border-b border-slate-800">
+      <header className="flex items-center justify-center px-5 py-4 border-b border-[#222]">
         <button
           onClick={() => setView('home')}
-          className="text-white font-bold text-lg hover:text-blue-400 transition-colors"
+          className="text-white font-bold text-xl hover:text-[#E5A00D] transition-colors"
         >
           PlexThing
         </button>
@@ -163,8 +152,8 @@ const App: React.FC = () => {
       </main>
 
       {/* Footer status bar */}
-      <footer className="px-4 py-2 border-t border-slate-800 text-center">
-        <p className="text-xs text-gray-500">
+      <footer className="px-5 py-3 border-t border-[#222] text-center">
+        <p className="text-xs text-[#505050]">
           {connected ? `Connected to ${serverName || 'Plex'}` : 'Not connected'}
         </p>
       </footer>

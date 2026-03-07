@@ -15,12 +15,12 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
 }) => {
   if (connected) {
     return (
-      <div className="flex items-center gap-2 px-3 py-2 bg-green-900/50 rounded-lg border border-green-800">
-        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-        <div className="flex-1">
-          <p className="text-sm font-medium text-green-400">Connected</p>
+      <div className="flex items-center gap-3 px-4 py-3 bg-[#1a1a1a] rounded-2xl border border-[#333]">
+        <div className="w-3 h-3 bg-[#4ade80] rounded-full animate-pulse shadow-[0_0_10px_#4ade80]" />
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-white">Connected</p>
           {serverName && (
-            <p className="text-xs text-green-300">{serverName}</p>
+            <p className="text-xs text-[#a0a0a0] truncate">{serverName}</p>
           )}
         </div>
       </div>
@@ -28,17 +28,17 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
   }
 
   return (
-    <div className="flex items-center gap-2 px-3 py-2 bg-red-900/50 rounded-lg border border-red-800">
-      <div className="w-2 h-2 bg-red-500 rounded-full" />
+    <div className="flex items-center gap-3 px-4 py-3 bg-[#1a1a1a] rounded-2xl border border-[#ef4444]/30">
+      <div className="w-3 h-3 bg-[#ef4444] rounded-full shadow-[0_0_10px_#ef4444]" />
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-red-400">Not Connected</p>
+        <p className="text-sm font-semibold text-white">Not Connected</p>
         {error && (
-          <p className="text-xs text-red-300 truncate">{error}</p>
+          <p className="text-xs text-[#a0a0a0] truncate">{error}</p>
         )}
       </div>
       <button
         onClick={onRetry}
-        className="px-2 py-1 text-xs bg-red-800 hover:bg-red-700 text-red-200 rounded transition-colors"
+        className="px-4 py-2 text-xs font-semibold bg-[#E5A00D] hover:bg-[#f5b020] text-black rounded-xl transition-all active:scale-95"
       >
         Retry
       </button>

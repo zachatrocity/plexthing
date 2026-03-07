@@ -1,7 +1,6 @@
 button {
   background: transparent;
   background-color: transparent;
-
   border: none;
 }
 
@@ -18,3 +17,75 @@ button:active {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Plexamp-inspired Design System */
+@layer base {
+  :root {
+    /* Plexamp Color Palette */
+    --plex-bg: #000000;
+    --plex-surface: #1a1a1a;
+    --plex-surface-hover: #2a2a2a;
+    --plex-accent: #E5A00D;
+    --plex-accent-hover: #f5b020;
+    --plex-text: #ffffff;
+    --plex-text-muted: #a0a0a0;
+    --plex-text-secondary: #707070;
+    --plex-border: #333333;
+    --plex-success: #4ade80;
+    --plex-error: #ef4444;
+    
+    /* Glassmorphism */
+    --glass-bg: rgba(26, 26, 26, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+  
+  body {
+    background-color: var(--plex-bg);
+    color: var(--plex-text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  .plex-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+  }
+  
+  .plex-button {
+    background: var(--plex-surface);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+  }
+  
+  .plex-button:hover {
+    background: var(--plex-surface-hover);
+    transform: translateY(-2px);
+  }
+  
+  .plex-button:active {
+    transform: translateY(0);
+  }
+  
+  .plex-button-primary {
+    background: var(--plex-accent);
+    color: #000;
+    font-weight: 600;
+  }
+  
+  .plex-button-primary:hover {
+    background: var(--plex-accent-hover);
+  }
+  
+  .plex-text-gradient {
+    background: linear-gradient(135deg, var(--plex-accent) 0%, #f5b020 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
