@@ -1,6 +1,9 @@
 import { DeskThing } from '@deskthing/server';
-import { DESKTHING_EVENTS } from '@deskthing/types';
+import { DESKTHING_EVENTS, SETTING_TYPES } from '@deskthing/types';
 import { createPlexClient, getPlexClient, PlexAPI } from './plex/index.js';
+
+// Track if settings have been initialized to prevent loops
+let settingsInitialized = false;
 
 // Settings keys
 const SETTINGS = {
@@ -19,7 +22,7 @@ const initializePlexClient = async (): Promise<boolean> => {
   const token = settings?.[SETTINGS.PLEX_TOKEN]?.value as string;
   
   if (!baseUrl || !token) {
-    DeskThing.sendLog('Plex not configured. Please set server URL and token in settings.');
+    console.log('Plex not configured. Please set server URL and token in settings.');
     DeskThing.send({
       type: 'plex:connection',
       payload: { connected: false, error: 'Not configured' },
@@ -32,14 +35,14 @@ const initializePlexClient = async (): Promise<boolean> => {
     const result = await client.testConnection();
     
     if (result.success) {
-      DeskThing.sendLog(`Connected to Plex server: ${result.serverName}`);
+      console.log(`Connected to Plex server: ${result.serverName}`);
       DeskThing.send({
         type: 'plex:connection',
         payload: { connected: true, serverName: result.serverName },
       });
       return true;
     } else {
-      DeskThing.sendLog(`Failed to connect to Plex: ${result.error}`);
+      console.log(`Failed to connect to Plex: ${result.error}`);
       DeskThing.send({
         type: 'plex:connection',
         payload: { connected: false, error: result.error },
@@ -48,7 +51,7 @@ const initializePlexClient = async (): Promise<boolean> => {
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    DeskThing.sendLog(`Error initializing Plex client: ${message}`);
+    console.log(`Error initializing Plex client: ${message}`);
     DeskThing.send({
       type: 'plex:connection',
       payload: { connected: false, error: message },
@@ -147,11 +150,11 @@ const handleRequest = async (request: { type: string; payload?: unknown }) => {
       }
 
       default:
-        DeskThing.sendLog(`Unknown request type: ${request.type}`);
+        console.log(`Unknown request type: ${request.type}`);
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    DeskThing.sendLog(`Error handling request ${request.type}: ${message}`);
+    console.log(`Error handling request ${request.type}: ${message}`);
     DeskThing.send({
       type: 'error',
       payload: { type: request.type, message },
@@ -160,10 +163,50 @@ const handleRequest = async (request: { type: string; payload?: unknown }) => {
 };
 
 /**
+ * Initialize settings with defaults if not set
+ */
+const initializeSettings = () => {
+  if (settingsInitialized) {
+    return;
+  }
+  
+  console.log('Initializing PlexThing settings...');
+  settingsInitialized = true;
+  
+  // Initialize settings in DeskThing - this creates the settings UI
+  DeskThing.initSettings({
+    [SETTINGS.PLEX_SERVER_URL]: {
+      id: SETTINGS.PLEX_SERVER_URL,
+      type: SETTING_TYPES.STRING,
+      label: 'Plex Server URL',
+      description: 'URL to your Plex Media Server (e.g., http://192.168.1.100:32400 or https://plex.yourdomain.com)',
+      value: 'http://localhost:32400',
+    },
+    [SETTINGS.PLEX_TOKEN]: {
+      id: SETTINGS.PLEX_TOKEN,
+      type: SETTING_TYPES.STRING,
+      label: 'Plex Token',
+      description: 'Your Plex authentication token. Get it from Settings → Account → Plex Token',
+      value: '',
+    },
+    [SETTINGS.PLAYER_IDENTIFIER]: {
+      id: SETTINGS.PLAYER_IDENTIFIER,
+      type: SETTING_TYPES.STRING,
+      label: 'Target Player',
+      description: 'Client identifier of the Plex player to control. Leave empty for auto-discovery.',
+      value: '',
+    },
+  });
+};
+
+/**
  * App startup
  */
 const start = async () => {
-  DeskThing.sendLog('PlexThing server starting...');
+  console.log('PlexThing server starting...');
+  
+  // Initialize settings first
+  initializeSettings();
   
   // Listen for requests from the frontend
   DeskThing.on(DESKTHING_EVENTS.DATA, handleRequest);
@@ -176,7 +219,7 @@ const start = async () => {
  * App shutdown
  */
 const stop = async () => {
-  DeskThing.sendLog('PlexThing server stopping...');
+  console.log('PlexThing server stopping...');
 };
 
 // Main entry point
@@ -186,7 +229,14 @@ DeskThing.on(DESKTHING_EVENTS.START, start);
 DeskThing.on(DESKTHING_EVENTS.STOP, stop);
 
 // Handle settings changes
+let settingsChangeTimeout: NodeJS.Timeout | null = null;
 DeskThing.on(DESKTHING_EVENTS.SETTINGS, async () => {
-  DeskThing.sendLog('Settings updated, reinitializing Plex connection...');
-  await initializePlexClient();
+  // Debounce settings changes to prevent loops
+  if (settingsChangeTimeout) {
+    clearTimeout(settingsChangeTimeout);
+  }
+  settingsChangeTimeout = setTimeout(async () => {
+    console.log('Settings updated, reinitializing Plex connection...');
+    await initializePlexClient();
+  }, 500);
 });

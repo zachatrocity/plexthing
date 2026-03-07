@@ -58,7 +58,7 @@ export class PlexAPI {
       ...((options.headers as Record<string, string>) || {}),
     };
 
-    DeskThing.sendLog(`Plex API Request: ${url.toString().replace(this.token, '***')}`);
+    console.log(`[PlexThing] API Request: ${url.toString().replace(this.token, '***')}`);
 
     try {
       const response = await fetch(url.toString(), {
@@ -106,11 +106,11 @@ export class PlexAPI {
     try {
       const response = await this.request<PlexLibrarySectionsResponse>('/library/sections');
       const serverName = response.MediaContainer.title1;
-      DeskThing.sendLog(`Successfully connected to Plex server: ${serverName}`);
+      console.log(`Successfully connected to Plex server: ${serverName}`);
       return { success: true, serverName };
     } catch (error) {
       const message = error instanceof PlexAPIError ? error.message : 'Unknown error';
-      DeskThing.sendLog(`Failed to connect to Plex: ${message}`);
+      console.log(`Failed to connect to Plex: ${message}`);
       return { success: false, error: message };
     }
   }

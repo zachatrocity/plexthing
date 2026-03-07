@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { deskthing } from '@deskthing/client';
-import Settings from './components/Settings';
+import { DeskThing } from '@deskthing/client';
 import ConnectionStatus from './components/ConnectionStatus';
 
 type View = 'home' | 'settings' | 'library' | 'player';
@@ -60,7 +59,7 @@ const App: React.FC = () => {
     window.addEventListener('message', handleMessage);
 
     // Request initial connection status
-    deskthing.sendMessageToParent({
+    DeskThing.send({
       type: 'plex:testConnection',
       payload: {},
     });
@@ -71,7 +70,7 @@ const App: React.FC = () => {
   const handleRetryConnection = () => {
     setIsLoading(true);
     setError(undefined);
-    deskthing.sendMessageToParent({
+    DeskThing.send({
       type: 'plex:testConnection',
       payload: {},
     });
@@ -90,16 +89,12 @@ const App: React.FC = () => {
     }
 
     switch (view) {
-      case 'settings':
-        return <Settings />;
-
       case 'home':
       default:
         return (
           <div className="p-4 space-y-4">
             <div className="text-center mb-6">
-              <h1 className="text-3xl font-bold text-white mb-2">PlexThing</h1>
-              <p className="text-gray-400">Plex Music for DeskThing</p>
+              <p className="text-gray-400">Plexamp for DeskThing</p>
             </div>
 
             <ConnectionStatus
@@ -120,7 +115,7 @@ const App: React.FC = () => {
               </button>
 
               <button
-                onClick={() => deskthing.sendMessageToParent({ type: 'plex:getClients', payload: {} })}
+                onClick={() => DeskThing.send({ type: 'plex:getClients', payload: {} })}
                 disabled={!connected}
                 className="p-4 bg-slate-800 hover:bg-slate-700 disabled:bg-slate-900 disabled:text-slate-600 text-white rounded-lg border border-slate-700 transition-colors"
               >
@@ -153,21 +148,13 @@ const App: React.FC = () => {
   return (
     <div className="bg-slate-900 w-full h-full overflow-hidden flex flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
+      <header className="flex items-center justify-center px-4 py-3 border-b border-slate-800">
         <button
           onClick={() => setView('home')}
           className="text-white font-bold text-lg hover:text-blue-400 transition-colors"
         >
           PlexThing
         </button>
-        {view !== 'settings' && (
-          <button
-            onClick={() => setView('settings')}
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            ⚙️
-          </button>
-        )}
       </header>
 
       {/* Main content */}
