@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DeskThing } from '@deskthing/client';
 import ConnectionStatus from './components/ConnectionStatus';
+import ArtistList from './components/ArtistList';
 
 type View = 'home' | 'library' | 'player';
 
@@ -73,6 +74,30 @@ const App: React.FC = () => {
     }
 
     switch (view) {
+      case 'library':
+        return (
+          <div className="flex flex-col h-full">
+            {/* Library Header */}
+            <div className="flex items-center gap-3 px-5 py-4 border-b border-[#222] bg-[#0f0f0f]">
+              <button
+                onClick={() => setView('home')}
+                className="flex items-center gap-2 text-[#a0a0a0] hover:text-white transition-colors"
+              >
+                <span className="text-xl">←</span>
+                <span className="text-sm font-medium">Back</span>
+              </button>
+              <h2 className="text-lg font-bold text-white ml-2">🎵 Library</h2>
+            </div>
+            {/* Artist List */}
+            <div className="flex-1 overflow-hidden">
+              <ArtistList
+                libraryId=""
+                onArtistSelect={(artist) => console.log('Artist selected:', artist)}
+              />
+            </div>
+          </div>
+        );
+
       case 'home':
       default:
         return (
