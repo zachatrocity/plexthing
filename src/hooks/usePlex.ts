@@ -175,5 +175,3 @@ export function useLibraries() {
     isError: status === 'error'
   };
 }
-
-import { autoFetch } from '@deskthing/client';

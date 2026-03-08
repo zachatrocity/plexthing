@@ -1,20 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { DeskThing } from '@deskthing/client';
+import React from 'react';
+import { useArtists, PlexArtist } from '../hooks/useArtists';
 
-// Types matching the server-side Plex types (exported)
-export interface PlexArtist {
-  ratingKey: string;
-  key: string;
-  guid: string;
-  title: string;
-  titleSort: string;
-  thumb: string;
-  art: string;
-  summary: string;
-  type: string;
-  addedAt: number;
-  updatedAt: number;
-}
+// Re-export PlexArtist for backward compatibility
+export type { PlexArtist };
 
 export interface PlexLibrary {
   key: string;
@@ -23,71 +11,22 @@ export interface PlexLibrary {
   thumb: string;
 }
 
-type LoadingState = 'idle' | 'loading' | 'error' | 'empty';
-
 interface ArtistListProps {
   libraryId?: string;
   onArtistSelect?: (artist: PlexArtist) => void;
+  baseUrl?: string;
+  token?: string;
 }
 
-const ArtistList: React.FC<ArtistListProps> = ({ libraryId, onArtistSelect }) => {
-  const [artists, setArtists] = useState<PlexArtist[]>([]);
-  const [recentlyAdded, setRecentlyAdded] = useState<PlexArtist[]>([]);
-  const [loadingState, setLoadingState] = useState<LoadingState>('idle');
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      const data = event.data;
-      if (!data?.type) return;
-
-      switch (data.type) {
-        case 'plex:artists': {
-          const fetchedArtists = Array.isArray(data.payload) ? data.payload : [];
-          
-          if (fetchedArtists.length === 0) {
-            setLoadingState('empty');
-            setArtists([]);
-            setRecentlyAdded([]);
-          } else {
-            setArtists(fetchedArtists);
-            // Sort by addedAt to get recently added (10 most recent)
-            const sorted = [...fetchedArtists].sort((a, b) => b.addedAt - a.addedAt);
-            setRecentlyAdded(sorted.slice(0, 10));
-            setLoadingState('idle');
-          }
-          setError(null);
-          break;
-        }
-
-        case 'error': {
-          setError(data.payload?.message || 'An error occurred');
-          setLoadingState('error');
-          break;
-        }
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-    
-    // Fetch artists when libraryId is provided
-    if (libraryId) {
-      fetchArtists(libraryId);
-    }
-
-    return () => window.removeEventListener('message', handleMessage);
-  }, [libraryId]);
-
-  const fetchArtists = (libId: string) => {
-    setLoadingState('loading');
-    setError(null);
-    DeskThing.send({ type: 'plex:getArtists', payload: { libraryId: libId } });
-  };
+const ArtistList: React.FC<ArtistListProps> = ({ libraryId, onArtistSelect, baseUrl, token }) => {
+  const { artists, recentlyAdded, loadingState, error, refetch } = useArtists({
+    libraryId: libraryId || null,
+    baseUrl,
+    token,
+  });
 
   const handleRetry = () => {
-    if (libraryId) {
-      fetchArtists(libraryId);
-    }
+    refetch();
   };
 
   const formatAddedDate = (timestamp: number) => {
