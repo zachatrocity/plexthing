@@ -1,4 +1,4 @@
-import { DeskThing } from '@deskthing/server';
+// DeskThing not used directly in this module
 import {
   PlexConfig,
   PlexAPIError,
