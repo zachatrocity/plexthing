@@ -5,13 +5,6 @@ import ArtistList from './components/ArtistList';
 
 type View = 'home' | 'library' | 'player';
 
-interface AppState {
-  view: View;
-  connected: boolean;
-  serverName?: string;
-  error?: string;
-}
-
 const App: React.FC = () => {
   const [view, setView] = useState<View>('home');
   const [connected, setConnected] = useState(false);

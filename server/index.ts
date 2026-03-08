@@ -1,6 +1,6 @@
 import { DeskThing } from '@deskthing/server';
 import { DESKTHING_EVENTS, SETTING_TYPES } from '@deskthing/types';
-import { createPlexClient, getPlexClient, PlexAPI } from './plex/index.js';
+import { createPlexClient, getPlexClient } from './plex/index.js';
 
 // Track if settings have been initialized to prevent loops
 let settingsInitialized = false;
