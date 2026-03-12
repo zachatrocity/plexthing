@@ -3,7 +3,7 @@ import { DeskThing } from '@deskthing/client';
 import ConnectionStatus from './components/ConnectionStatus';
 import ArtistList, { PlexArtist } from './components/ArtistList';
 import AlbumList, { PlexAlbum } from './components/AlbumList';
-import TrackList, { PlexTrack } from './components/TrackList';
+import TrackList from './components/TrackList';
 import NowPlaying, { NowPlayingData } from './components/NowPlaying';
 
 type View = 'home' | 'artists' | 'albums' | 'tracks' | 'player';
