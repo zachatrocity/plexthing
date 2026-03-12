@@ -12,7 +12,7 @@ _The next bead to work on._
 
 | Bead ID | Issue | Title | Status | Notes |
 |---------|-------|-------|--------|-------|
-| #4 | [#9](https://github.com/zachatrocity/plexthing/issues/9) | Build artist list view | 🔧 Ready | Can start browsing UI |
+| #5 | [#10](https://github.com/zachatrocity/plexthing/issues/10) | Implement navigation (Artist → Album → Track) | 🔧 Ready | Next up |
 
 ---
 
@@ -20,9 +20,7 @@ _The next bead to work on._
 
 | Bead ID | Issue | Title | Estimate | Priority |
 |---------|-------|-------|----------|----------|
-| #4 | [#9](https://github.com/zachatrocity/plexthing/issues/9) | Build artist list view | 3-4h | Medium |
 | #5 | [#10](https://github.com/zachatrocity/plexthing/issues/10) | Implement navigation (Artist → Album → Track) | 3-4h | Medium |
-| #6 | [#11](https://github.com/zachatrocity/plexthing/issues/11) | Build Now Playing screen | 4-5h | Medium |
 | #7 | [#12](https://github.com/zachatrocity/plexthing/issues/12) | Implement timeline subscription | 3-4h | High |
 
 ---
@@ -35,6 +33,8 @@ _The next bead to work on._
 | #1 | [#1](https://github.com/zachatrocity/plexthing/issues/1) | Update package.json with proper app metadata | 2026-03-06 | Branding + settings schema |
 | #2 | [#7](https://github.com/zachatrocity/plexthing/issues/7) | Create Plex API client module | 2026-03-06 | Full TypeScript client |
 | #3 | [#8](https://github.com/zachatrocity/plexthing/issues/8) | Build settings/config UI | 2026-03-06 | React settings + connection UI |
+| #4 | [#9](https://github.com/zachatrocity/plexthing/issues/9) | Build artist list view | 2026-03-08 | UI list built |
+| #6 | [#11](https://github.com/zachatrocity/plexthing/issues/11) | Build Now Playing screen | 2026-03-12 | UI + EQ + Plexamp styling (PR #14) |
 
 ---
 
@@ -144,22 +144,20 @@ Refs: #issue-number`
 |-----------|-------|------------|--------|
 | M0: Bootstrap | 2/2 | 100% | Done |
 | M1: Plex Connection | 2/2 | 100% | Done |
-| M2: Library Browser | 0/Pend | 0% | Week 2 |
-| M3: Player Discovery | 0/Pend | 0% | Week 3 |
-| M4: Now Playing | 0/Pend | 0% | Week 3-4 |
+| M2: Library Browser | 1/2 | 50% | Week 2 |
+| M3: Player Discovery | 0/1 | 0% | Week 3 |
+| M4: Now Playing | 1/1 | 100% | Done |
 | M5: Car Thing | 0/Pend | 0% | Week 4 |
 | M6: Release | 0/Pend | 0% | Week 5 |
 
-**Overall Progress:** ~15% (4 beads complete)
+**Overall Progress:** ~40% (6 beads complete)
 
 ---
 
 ## Open Issues
 
 See [GitHub Issues](https://github.com/zachatrocity/plexthing/issues) for full list:
-- #9: M2 - Build artist list view (Ready)
 - #10: M2 - Implement navigation
-- #11: M4 - Build Now Playing screen
 - #12: M3 - Implement timeline subscription
 
 ---
@@ -197,4 +195,4 @@ See [GitHub Issues](https://github.com/zachatrocity/plexthing/issues) for full l
 
 **Ready to resume - all context preserved in GitHub issues and BEADS.md**
 
-**Last Updated:** March 7, 2026
+**Last Updated:** March 12, 2026
