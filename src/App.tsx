@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DeskThing } from '@deskthing/client';
 import ConnectionStatus from './components/ConnectionStatus';
 import ArtistList from './components/ArtistList';
+import NowPlaying, { NowPlayingData } from './components/NowPlaying';
 
 type View = 'home' | 'library' | 'player';
 
@@ -11,6 +12,18 @@ const App: React.FC = () => {
   const [serverName, setServerName] = useState<string | undefined>();
   const [libraryName, setLibraryName] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
+  const [nowPlaying, setNowPlaying] = useState<NowPlayingData>({
+    title: 'Nothing Playing',
+    artist: '—',
+    album: '—',
+    artworkUrl: undefined,
+    durationMs: 0,
+    positionMs: 0,
+    isPlaying: false,
+    shuffle: false,
+    repeat: 'off',
+    volume: 70,
+  });
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -34,6 +47,10 @@ const App: React.FC = () => {
           console.log('Artists:', data.payload);
           break;
         }
+        case 'plex:nowPlaying': {
+          setNowPlaying((prev) => ({ ...prev, ...(data.payload as Partial<NowPlayingData>) }));
+          break;
+        }
         case 'error': {
           console.error('Server error:', data.payload);
           setError(data.payload?.message || 'Unknown error');
@@ -51,6 +68,42 @@ const App: React.FC = () => {
   const handleRetryConnection = () => {
     setError(undefined);
     DeskThing.send({ type: 'plex:testConnection', payload: {} });
+  };
+
+  const handleSeek = (positionMs: number) => {
+    setNowPlaying((prev) => ({ ...prev, positionMs }));
+    // Future: DeskThing.send({ type: 'plex:seek', payload: { positionMs } });
+  };
+
+  const handleTogglePlay = () => {
+    setNowPlaying((prev) => ({ ...prev, isPlaying: !prev.isPlaying }));
+    // Future: DeskThing.send({ type: 'plex:playPause', payload: {} });
+  };
+
+  const handlePrev = () => {
+    // Future: DeskThing.send({ type: 'plex:prev', payload: {} });
+  };
+
+  const handleNext = () => {
+    // Future: DeskThing.send({ type: 'plex:next', payload: {} });
+  };
+
+  const handleVolumeChange = (volume: number) => {
+    setNowPlaying((prev) => ({ ...prev, volume }));
+    // Future: DeskThing.send({ type: 'plex:setVolume', payload: { volume } });
+  };
+
+  const handleToggleShuffle = () => {
+    setNowPlaying((prev) => ({ ...prev, shuffle: !prev.shuffle }));
+    // Future: DeskThing.send({ type: 'plex:toggleShuffle', payload: {} });
+  };
+
+  const handleToggleRepeat = () => {
+    setNowPlaying((prev) => ({
+      ...prev,
+      repeat: prev.repeat === 'off' ? 'all' : prev.repeat === 'all' ? 'one' : 'off',
+    }));
+    // Future: DeskThing.send({ type: 'plex:toggleRepeat', payload: {} });
   };
 
   const renderContent = () => {
@@ -76,6 +129,22 @@ const App: React.FC = () => {
                 onArtistSelect={(artist) => console.log('Artist selected:', artist)}
               />
             </div>
+          </div>
+        );
+
+      case 'player':
+        return (
+          <div className="h-full">
+            <NowPlaying
+              data={nowPlaying}
+              onSeek={handleSeek}
+              onTogglePlay={handleTogglePlay}
+              onPrev={handlePrev}
+              onNext={handleNext}
+              onVolumeChange={handleVolumeChange}
+              onToggleShuffle={handleToggleShuffle}
+              onToggleRepeat={handleToggleRepeat}
+            />
           </div>
         );
 
