@@ -123,8 +123,24 @@ const NowPlaying: React.FC<Props> = ({
           </div>
         </div>
 
+        {/* Static EQ */}
+        <div className="mt-4 flex items-center justify-center gap-2">
+          {Array.from({ length: 9 }).map((_, i) => (
+            <div
+              key={i}
+              className={`w-2 rounded-full bg-gradient-to-t from-[#f2c94c] to-[#f59c2d] ${
+                i % 3 === 0
+                  ? 'h-8 opacity-90'
+                  : i % 3 === 1
+                  ? 'h-5 opacity-70'
+                  : 'h-6 opacity-80'
+              }`}
+            />
+          ))}
+        </div>
+
         {/* Track Info */}
-        <div className="mt-4 text-center">
+        <div className="mt-3 text-center">
           <div className="text-base font-semibold tracking-wide truncate">{data.title}</div>
           <div className="text-sm text-[#c0c0c0] truncate">{data.artist}</div>
           <div className="text-xs text-[#8a8a8a] truncate">{data.album}</div>
