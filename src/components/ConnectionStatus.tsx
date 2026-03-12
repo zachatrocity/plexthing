@@ -3,6 +3,7 @@ import React from 'react';
 interface ConnectionStatusProps {
   connected: boolean;
   serverName?: string;
+  libraryName?: string;
   error?: string;
   onRetry: () => void;
 }
@@ -10,17 +11,18 @@ interface ConnectionStatusProps {
 const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
   connected,
   serverName,
+  libraryName,
   error,
   onRetry,
 }) => {
   if (connected) {
     return (
       <div className="flex items-center gap-3 px-4 py-3 bg-[#1a1a1a] rounded-2xl border border-[#333]">
-        <div className="w-3 h-3 bg-[#4ade80] rounded-full animate-pulse shadow-[0_0_10px_#4ade80]" />
+        <div className="w-3 h-3 bg-[#4ade80] rounded-full animate-pulse shadow-[0_0_10px_#4ade80] mr-2" />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-white">Connected</p>
-          {serverName && (
-            <p className="text-xs text-[#a0a0a0] truncate">{serverName}</p>
+          {serverName && libraryName && (
+            <p className="text-xs text-[#a0a0a0] truncate">{serverName} - {libraryName}</p>
           )}
         </div>
       </div>

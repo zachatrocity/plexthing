@@ -1,6 +1,25 @@
 import { DeskThing } from '@deskthing/server';
 import { DESKTHING_EVENTS, SETTING_TYPES } from '@deskthing/types';
 import { createPlexClient, getPlexClient } from './plex/index.js';
+import { config } from 'dotenv';
+import { resolve } from 'path';
+import { existsSync } from 'fs';
+
+// Load .env file for local development
+// Try multiple possible locations since the server may run from different directories
+const envPaths = [
+  resolve(process.cwd(), '.env'),
+  resolve(process.cwd(), '..', '.env'),
+  resolve(process.cwd(), '..', '..', '.env'),
+];
+
+for (const envPath of envPaths) {
+  if (existsSync(envPath)) {
+    console.log(`Loading .env from: ${envPath}`);
+    config({ path: envPath });
+    break;
+  }
+}
 
 // Track if settings have been initialized to prevent loops
 let settingsInitialized = false;
@@ -10,19 +29,62 @@ const SETTINGS = {
   PLEX_SERVER_URL: 'plex_server_url',
   PLEX_TOKEN: 'plex_token',
   PLAYER_IDENTIFIER: 'player_identifier',
+  PLEX_LIBRARY: 'plex_library',
+} as const;
+
+// Default values that indicate "not configured" - we should use env fallback for these
+const DEFAULT_VALUES = {
+  [SETTINGS.PLEX_SERVER_URL]: 'http://localhost:32400',
+  [SETTINGS.PLEX_TOKEN]: '',
+  [SETTINGS.PLAYER_IDENTIFIER]: '',
+  [SETTINGS.PLEX_LIBRARY]: '',
 } as const;
 
 /**
+ * Get setting value with .env fallback for local development
+ * Env vars take priority if set, allowing easy local development override
+ */
+const getSettingWithEnvFallback = (
+  settings: Record<string, { value: unknown }> | null | undefined,
+  settingKey: string,
+  envKey: string
+): string => {
+  const envValue = process.env[envKey];
+  const settingValue = settings?.[settingKey]?.value as string | undefined;
+  const defaultValue = DEFAULT_VALUES[settingKey as keyof typeof DEFAULT_VALUES];
+  
+  // If env var is set, prefer it (allows local dev override)
+  if (envValue && envValue.trim() !== '') {
+    return envValue;
+  }
+  
+  // Otherwise use setting value if it's not the default
+  if (settingValue && settingValue.trim() !== '' && settingValue !== defaultValue) {
+    return settingValue;
+  }
+  
+  // Fall back to setting value even if it's default (better than nothing)
+  return settingValue || '';
+};
+
+/**
  * Initialize Plex client with current settings
+ * Falls back to .env values for local development
  */
 const initializePlexClient = async (): Promise<boolean> => {
   const settings = await DeskThing.getSettings();
-  
-  const baseUrl = settings?.[SETTINGS.PLEX_SERVER_URL]?.value as string;
-  const token = settings?.[SETTINGS.PLEX_TOKEN]?.value as string;
-  
+
+  // Get settings with .env fallbacks
+  const baseUrl = getSettingWithEnvFallback(settings, SETTINGS.PLEX_SERVER_URL, 'PLEX_SERVER_URL');
+  const token = getSettingWithEnvFallback(settings, SETTINGS.PLEX_TOKEN, 'PLEX_TOKEN');
+
+  // Log if using env fallbacks (helpful for debugging)
+  if (process.env.PLEX_SERVER_URL || process.env.PLEX_TOKEN) {
+    console.log('Using .env values for Plex configuration');
+  }
+
   if (!baseUrl || !token) {
-    console.log('Plex not configured. Please set server URL and token in settings.');
+    console.log('Plex not configured. Please set server URL and token in settings or .env file.');
     DeskThing.send({
       type: 'plex:connection',
       payload: { connected: false, error: 'Not configured' },
@@ -33,12 +95,13 @@ const initializePlexClient = async (): Promise<boolean> => {
   try {
     const client = createPlexClient({ baseUrl, token });
     const result = await client.testConnection();
-    
+    const libraries = await client.getMusicLibraries();
+
     if (result.success) {
-      console.log(`Connected to Plex server: ${result.serverName}`);
+      console.log(`Connected to Plex server: ${result.serverName}, libraries: ${JSON.stringify(libraries)}`);
       DeskThing.send({
         type: 'plex:connection',
-        payload: { connected: true, serverName: result.serverName },
+        payload: { connected: true, serverName: result.serverName, library: libraries.find(l => l.title == SETTINGS.PLEX_LIBRARY) },
       });
       return true;
     } else {
@@ -65,7 +128,7 @@ const initializePlexClient = async (): Promise<boolean> => {
  */
 const handleRequest = async (request: { type: string; payload?: unknown }) => {
   const client = getPlexClient();
-  
+
   if (!client) {
     DeskThing.send({
       type: 'error',
@@ -169,17 +232,17 @@ const initializeSettings = () => {
   if (settingsInitialized) {
     return;
   }
-  
+
   console.log('Initializing PlexThing settings...');
   settingsInitialized = true;
-  
+
   // Initialize settings in DeskThing - this creates the settings UI
   DeskThing.initSettings({
     [SETTINGS.PLEX_SERVER_URL]: {
       id: SETTINGS.PLEX_SERVER_URL,
       type: SETTING_TYPES.STRING,
       label: 'Plex Server URL',
-      description: 'URL to your Plex Media Server (e.g., http://192.168.1.100:32400 or https://plex.yourdomain.com)',
+      description: 'URL to your Plex Media Server (e.g., http://192.168.0.1:32400 or https://plex.yourdomain.com)',
       value: 'http://localhost:32400',
     },
     [SETTINGS.PLEX_TOKEN]: {
@@ -204,13 +267,13 @@ const initializeSettings = () => {
  */
 const start = async () => {
   console.log('PlexThing server starting...');
-  
+
   // Initialize settings first
   initializeSettings();
-  
+
   // Listen for requests from the frontend
   DeskThing.on(DESKTHING_EVENTS.DATA, handleRequest);
-  
+
   // Initialize Plex connection
   await initializePlexClient();
 };

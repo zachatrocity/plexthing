@@ -9,8 +9,8 @@ const App: React.FC = () => {
   const [view, setView] = useState<View>('home');
   const [connected, setConnected] = useState(false);
   const [serverName, setServerName] = useState<string | undefined>();
+  const [libraryName, setLibraryName] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -19,11 +19,11 @@ const App: React.FC = () => {
 
       switch (data.type) {
         case 'plex:connection': {
-          const { connected: conn, error: err, serverName: name } = data.payload;
+          const { connected: conn, error: err, serverName: name, library} = data.payload;
           setConnected(conn);
           setError(err);
           setServerName(name);
-          setIsLoading(false);
+          setLibraryName(library.title);
           break;
         }
         case 'plex:libraries': {
@@ -49,23 +49,11 @@ const App: React.FC = () => {
   }, []);
 
   const handleRetryConnection = () => {
-    setIsLoading(true);
     setError(undefined);
     DeskThing.send({ type: 'plex:testConnection', payload: {} });
   };
 
   const renderContent = () => {
-    if (isLoading) {
-      return (
-        <div className="flex items-center justify-center h-full">
-          <div className="text-center">
-            <div className="w-12 h-12 border-3 border-[#E5A00D] border-t-transparent rounded-full animate-spin mx-auto mb-6" />
-            <p className="text-[#a0a0a0] text-lg">Connecting to Plex...</p>
-          </div>
-        </div>
-      );
-    }
-
     switch (view) {
       case 'library':
         return (
@@ -95,17 +83,10 @@ const App: React.FC = () => {
       default:
         return (
           <div className="p-5 space-y-5">
-            {/* Logo/Title Section */}
-            <div className="text-center py-4">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-[#E5A00D] to-[#f5b020] bg-clip-text text-transparent">
-                PlexThing
-              </h1>
-              <p className="text-[#707070] text-sm mt-1">Plex Music for DeskThing</p>
-            </div>
-
             <ConnectionStatus
               connected={connected}
               serverName={serverName}
+              libraryName={libraryName}
               error={error}
               onRetry={handleRetryConnection}
             />
